@@ -99,7 +99,7 @@ short fde(short memory[4096]){
 		reg.MAR = reg.PC;
 		reg.IR = memory[reg.MAR];
 		reg.PC++;
-        reg.MAR = operandM(reg.IR,0);
+		reg.MAR = operandM(reg.IR,0);  //MAR refers to an address 
 		cdtb(reg.IR, bin16);
 		switch (opcodeM(bin16)){
 			
