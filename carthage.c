@@ -91,11 +91,11 @@ void read_file(short memory[4096]){
 	size_t length = 0;
 	ssize_t output;
 	int index;
-	char file[255];
+	char file[256];
 
 	printf("Please enter a full file name with the extension.\n");
 	printf("(Up to 20 chars in length)\n");
-	scanf(" %255s", file);
+	scanf(" %256s", file);
 	filePointer = fopen(file, "r");
 
 	if (filePointer == NULL){
