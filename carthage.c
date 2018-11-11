@@ -37,12 +37,12 @@ void and(short memory[4096], struct registers reg);
 void or(short memory[4096], struct registers reg);
 
 //Helper functions:
-char* cdtb(int p, char *binary);	//(Convert decimal to binary)   DONE
+char* cdtb(int p, char *binary, int bits);	//(Convert decimal to binary)   DONE
 int cbtd(char *str);	//(Convert binary to decimal)   DONE
 int opcodeM(char *str)	//gets the opcode DONE
 
 void display_memory_content();	//????
-void convert_to_assembly();
+void convert_to_assembly(shor memory); //DONE
 
 
 
@@ -159,7 +159,7 @@ int cbtd(char *str){
 	}
 	k = 1;
 	if(binary[0] == 1){
-		for(j = 0; j<n; j++){
+		for(j = 0; j<n-1; j++){
 			k*=2;
 		}
 		p -= k;
@@ -185,18 +185,13 @@ int cbtd(char *str){
 	return p;
 }
 //takes in a decimal number and the address of a string to return the binary value as a string
-char* cdtb(int p, char *binary){
+char* cdtb(int p, char *binary, int bits){
 	int i, n, k;
-	if(p<-2048||p>=2048){
-		n=16;
-		}
-	else{
-		n = 12;
-		}
+	n = bits;
 	k = 1;
 		
 	if(p<0){
-		for(i = 0; i<n; i++){
+		for(i = 0; i<n-1; i++){
 			k*=2;
 		}
 		p += k;
@@ -215,11 +210,11 @@ char* cdtb(int p, char *binary){
 	p/=2;
 	}
 	binary[n] = '\0';
+	
 	return binary;
-
 }
 
-}
+
 //this gets the opcode from an instruction- decided to return it as an int bc it means we can use a switch on it later
 int opcodeM(char *str){
 	int i = 0;
@@ -238,4 +233,93 @@ int opcodeM(char *str){
     } 
     
 	return value;
+}
+
+int operandM(char *str){
+	int i = 0;
+	char operand[13];
+	for(i=0; i<13; i++){
+		operand[i] = str[i+4];
+	}
+	operand[13] = '\0';
+	
+	
+	return cbtd(operand);
+}
+
+
+//converts to assembly
+void display_assembly(short memory[]){	
+	int address;
+	char *instruction = " ";
+	int operating_on;
+	char binary[17];
+	int jump = 0;
+	printf("ADDRESS |INSTRUCTION    |ON\n");
+	printf("________+_______________+_____\n");
+	for(address = 0; address+jump < 4096; address++) {
+		operating_on = operandM(cdtb(memory[address+jump], binary, 16));
+        	switch(opcodeM(cdtb(memory[address+jump], binary, 16))){
+			case 11:
+				instruction = "OR";
+				break;
+			case 10:
+				instruction = "AND";
+				break;
+			case 9:
+				instruction = "LOADC";
+				break;
+			case 8:
+				instruction = "JUMPX";
+				break;
+			case 7:
+				instruction = "SKIP";
+				operating_on = 0;
+				break;
+			case 6:
+				instruction = "OUTPT";
+				operating_on = 0;
+				break;
+			case 5:
+				instruction = "INPUT";
+				operating_on = 0;
+				break;
+			case 4:
+				instruction = "ADD";
+				break;
+			case 3:
+				instruction = "SUB";
+				break;
+			case 2:
+				instruction = "STORE";
+				break;
+			case 1:
+				instruction = "LOAD";
+				break;
+			case 0:
+				instruction = "HALT";
+				operating_on = 0;
+				break;
+			default:
+				instruction = "NULL";
+				operating_on = 0;
+				break;
+				
+			}
+		printf(" %d\t| %s\t\t| %d\n", address+jump, instruction, operating_on);
+
+		if (strcmp(instruction, "HALT") == 0) {
+			break;
+		}
+		
+		else if(strcmp(instruction, "JUMPX") == 0){
+			
+			jump = operating_on;
+			continue;
+		}
+		else{
+			continue;
+		}
+	
+    }
 }
