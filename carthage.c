@@ -86,7 +86,29 @@ void read_console_input(short memory[4096]){
 	printf("Read the console for input.\n");
 }
 void read_file(short memory[4096]){
-	printf("Read stuff from a file.\n");
+	FILE *filePointer;
+	char *line = NULL;
+	size_t length = 0;
+	ssize_t output;
+	int index;
+	char file[255];
+
+	printf("Please enter a full file name with the extension.\n");
+	printf("(Up to 20 chars in length)\n");
+	scanf(" %255s", file);
+	filePointer = fopen(file, "r");
+
+	if (filePointer == NULL){
+		printf("File not found: %s \n", file);
+		exit(EXIT_FAILURE);
+	}
+	
+	while ((output = getline(&line, &length, filePointer)) != -1){
+			memory[index] = cbtd(line);
+			index++;
+	}
+
+	fclose(filePointer);
 }
 short fde(short memory[4096]){
 	struct registers reg;
