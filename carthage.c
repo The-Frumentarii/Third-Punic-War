@@ -115,27 +115,38 @@ int cbtd(char *str){
 }
 //takes in a decimal number and the address of a string to return the binary value as a string
 char* cdtb(int p, char *binary){
-	int i;
-
+	int i, n, k;
+	if(p<-2048||p>=2048){
+		n=16;
+		}
+	else{
+		n = 12;
+		}
+	k = 1;
+		
 	if(p<0){
-		p += 2048;
+		for(i = 0; i<n; i++){
+			k*=2;
+		}
+		p += k;
 		binary[0] = '1';
-
 	}
 	else{
 		binary[0] = '0';
-	}
-	for(i=1; i<12; i++){
+		}
+	for(i=1; i<n; i++){
 		if(p%2==0){
-			binary[12-i] = '0';
+			binary[n-i] = '0';
 		}
 		else{
-			binary[12-i] = '1';
+			binary[n-i] = '1';
 		}
 	p/=2;
 	}
-	binary[12] = '\0';
+	binary[n] = '\0';
 	return binary;
+
+}
 
 }
 //this gets the opcode from an instruction- decided to return it as an int bc it means we can use a switch on it later
