@@ -99,10 +99,8 @@ short fde(short memory[4096]){
 		reg.MAR = reg.PC;
 		reg.IR = memory[reg.MAR];
 		reg.PC++;
+        reg.MAR = operandM(reg.IR,0);
 		cdtb(reg.IR, bin16);
-		printf("%s\n", bin16);
-        //Copy bits 11-0 from IR to MAR
-        printf(" %d\n", opcodeM(bin16));
 		switch (opcodeM(bin16)){
 			
 			case 0:
