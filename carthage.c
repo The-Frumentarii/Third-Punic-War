@@ -40,9 +40,10 @@ void or(short memory[4096], struct registers reg);
 char* cdtb(int p, char *binary, int bits);	//(Convert decimal to binary)   DONE
 int cbtd(char *str);	//(Convert binary to decimal)   DONE
 int opcodeM(char *str)	//gets the opcode DONE
+int operandM(char *str, int complement); //gets opcode
 
 void display_memory_content();	//????
-void convert_to_assembly(shor memory); //DONE
+void convert_to_assembly(short memory); //DONE
 
 
 
@@ -234,17 +235,29 @@ int opcodeM(char *str){
     
 	return value;
 }
-
-int operandM(char *str){
+//operand method fixed it! also kill(: me(:
+int operandM(char *str, int complement){
 	int i = 0;
 	char operand[13];
 	for(i=0; i<13; i++){
 		operand[i] = str[i+4];
 	}
 	operand[13] = '\0';
+
 	
+	if(complement==2){
+		return cbtd(operand);	
+	}
+	else{
+	int power = 2048;
+	for(int i=0;i<12; i++){
+    			if(opcode[i] == '1')
+    				value = value + power;
+    		power = power/2;
+    		} 
+		return value;
+	}
 	
-	return cbtd(operand);
 }
 
 
@@ -258,7 +271,7 @@ void display_assembly(short memory[]){
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	for(address = 0; address+jump < 4096; address++) {
-		operating_on = operandM(cdtb(memory[address+jump], binary, 16));
+		operating_on = operandM(cdtb(memory[address+jump], binary, 16), 1);
         	switch(opcodeM(cdtb(memory[address+jump], binary, 16))){
 			case 11:
 				instruction = "OR";
@@ -268,6 +281,7 @@ void display_assembly(short memory[]){
 				break;
 			case 9:
 				instruction = "LOADC";
+				operating_on = operandM(cdtb(memory[address+jump], binary, 16), 2);
 				break;
 			case 8:
 				instruction = "JUMPX";
