@@ -2,27 +2,39 @@
 #include <stdio.h>
 #include <string.h>
 
+//Structure used to hold the values of the registers 
+struct registers{
+	short AC;		//Acumulator						16 bits
+	short IR;		//Instruction Register 					16 bits
+	short MBR; 		//Memory Buffer Register				16 bits
+	short PC; 		//Program Counter					12 bits
+	short MAR;		//Memory Address Register				12 bits
+	short InREG;		//Input Register					16 bits
+	short OutREG;		//Output Register					16 bits
+	short FR;		//Flag Register						16 bits
+};
+
 //List of functions we need to implement: (Might need to make more helper functions; Return types and parameters not included)
-void load_default();
-void read_console_input();
-void read_file();
-void fde();       // fetch-decode-execute
+void load_default(short memory[4096]);
+void read_console_input(short memory[4096]);
+void read_file(short memory[4096]);
+short fde(short memory[4096]);       // fetch-decode-execute
 
 //This part contains functions for the operations of our disassembler:
-void load();
-void store();
-void subt();
-void add();
-void input();
-void output();
-void skipcond();
-void jump();
-void halt();
+void load(short memory[4096], struct registers reg);
+void store(short memory[4096], struct registers reg);
+void sub(short memory[4096], struct registers reg);
+void add(short memory[4096], struct registers reg);
+void input(struct registers reg);
+void output(struct registers reg);
+void skipcond(struct registers reg);
+void jump(struct registers reg);
+void halt(struct registers reg);
 
 //List of 3 more functions that we can add to our disassembler:
-void loadc();
-void and();
-void or();
+void loadc(struct registers reg);
+void and(short memory[4096], struct registers reg);
+void or(short memory[4096], struct registers reg);
 
 //Helper functions:
 char* cdtb(int p, char *binary);	//(Convert decimal to binary)   DONE
@@ -45,13 +57,13 @@ int main(int argc, char* argv[]){
 	}
 
 	if(!(strcmp(argv[1],"-d")))
-		load_default();		//load default content to memory
+		load_default(memory);		//load default content to memory
 	else{
 		if(!(strcmp(argv[1],"-c")))
-			read_console_input();		//read user input from console into the memory
+			read_console_input(memory);		//read user input from console into the memory
 		else{
 			if(!(strcmp(argv[1],"-f")))
-				read_file();		//read the contents of a file into memory
+				read_file(memory);		//read the contents of a file into memory
 			else{
 				printf("Invalid argument.\n");
 				printf("Program terminated.\n");
@@ -61,7 +73,7 @@ int main(int argc, char* argv[]){
 	}
 
 
-	fde(); // fetch-decode-execute
+	fde(memory); // fetch-decode-execute
 	return 0;
 
 }
@@ -76,8 +88,67 @@ void read_file(){
 	printf("Read stuff from a file.\n");
 }
 void fde(){
-	printf("Executed the stuff in memory.\n");
+	struct registers reg;
+	char bin12[13];	//Binary Representation of 12 bit Register
+	char bin16[17];	//Binary Representation of 16 bit Register
+	
+	reg.FR = 1; 	//Program is running
+	reg.PC = 0;
+	while(reg.FR==1){
+		reg.MAR = reg.PC;
+		reg.IR = memory[reg.MAR];
+		reg.PC++;
+		cdtb(reg.IR, bin16);
+		printf("%s\n", bin16);
+        //Copy bits 11-0 from IR to MAR
+        printf(" %d\n", opcodeM(bin16));
+		switch (opcodeM(bin16)){
+			
+			case 0:
+			        halt(reg);
+			        break;
+			case 1:
+			        load(memory,reg);
+			        break;
+			case 2:
+			        store(memory,reg);
+			        break;
+			case 3:
+			        sub(memory,reg);
+			        break;
+			case 4:
+			        add(memory,reg);
+			        break;
+			case 5:
+			        input(reg);
+			        break;
+			case 6:
+			        output(reg);
+			        break;
+			case 7:
+			        skipcond(reg);
+			        break;
+			case 8:
+			        jump(reg);
+			        break;
+			case 9:
+			        loadc(reg);
+			        break;
+			case 10:
+			        and(reg,memory);
+			        break;
+			case 11:
+			        or(reg,memory);
+			        break;
+			default:
+			        printf("Invalid Opcode.\n");
+			        break;
+		}
+	}
+	
+	return reg.AC;
 }
+
 //takes in a binary number as a string and returns the decimal value as an int
 int cbtd(char *str){
 	int p, i, j, k, n;
@@ -157,7 +228,14 @@ int opcodeM(char *str){
 		opcode[i] = str[i];
 	}
 	opcode[4] = '\0';
-
-
-	return cbtd(opcode);
+	
+	int value = 0;
+    int power = 8;
+    for(int i=0;i<5; i++){
+    	if(opcode[i] == '1')
+    		value = value + power;
+    	power = power/2;
+    } 
+    
+	return value;
 }
