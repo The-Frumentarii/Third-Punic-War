@@ -78,16 +78,16 @@ int main(int argc, char* argv[]){
 
 }
 
-void load_default(){
+void load_default(short memory[4096]){
 	printf("Loaded some stuff.\n");
 }
-void read_console_input(){
+void read_console_input(short memory[4096]){
 	printf("Read the console for input.\n");
 }
-void read_file(){
+void read_file(short memory[4096]){
 	printf("Read stuff from a file.\n");
 }
-void fde(){
+short fde(short memory[4096]){
 	struct registers reg;
 	char bin12[13];	//Binary Representation of 12 bit Register
 	char bin16[17];	//Binary Representation of 16 bit Register
