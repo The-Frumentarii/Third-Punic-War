@@ -1,0 +1,40 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define INPUT_FILE "test.txt"
+
+//This is the function itself without test code, the remainder of the code was identical to the original attempt.
+//Worth pointing out the line length of 17 items since I was not sure what needed to be changed to make it coexist happily with the binary to int coverter.
+
+void read_file(){
+
+	FILE *filePointer;
+	short memory[4096];
+	char line[16];
+	int index;
+	char file[255];
+
+	printf("Please enter a full file name with the extension.\n");
+	printf("(Up to 20 chars in length)\n");
+	scanf(" %255s", file);
+	filePointer = fopen(file, "r");
+
+	if (filePointer == NULL){
+		printf("File not found: %s \n", file);
+		exit(EXIT_FAILURE);
+	}
+	printf("File read successful\n");
+	
+	while (fgets(line, 18, (FILE*)filePointer)){
+			printf("read: %s \n", line);
+			memory[index] = cbtd(line);
+			index++;
+	}
+
+	for(index = 0; index <3; index++){
+	printf("%i", memory[index]);
+	}
+
+	fclose(filePointer);
+
+}
