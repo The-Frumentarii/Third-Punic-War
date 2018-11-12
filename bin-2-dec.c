@@ -7,7 +7,7 @@
 
 int16_t value_from_binary_string() {
 
-    const char input = "1111111100000000";
+    const char* input = "1111111100000000";
 
     int16_t value = 0;
     for (signed i = 0; i < 16; i++){
