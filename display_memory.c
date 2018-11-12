@@ -69,7 +69,7 @@ int main(){
 
 void display_memory_contents(int loopcount){
 
-      puts("Memory contents: "); // prints a heading
+    printf("Memory contents at position: %d ", loopcount); // prints a heading
 
       printf("%04" PRIx16, memory[loopcount]); // prints content in hex
 
