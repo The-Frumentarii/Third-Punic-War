@@ -17,8 +17,7 @@ With the last convert bin 2 dec function, 0 kept being returned,
 this is the same with the new one and I think it is because of
 the way the variable is being passed to it.
 
-I still need to work on printing the memory in hex, no idea yet
-how to do it, but will work on it.
+I still need to work on printing the memory address in hex
 
 Anything else in this which is crap, let me know and I'll try fix it
 
@@ -72,16 +71,16 @@ void display_memory_contents(int loopcount){
 
       puts("Memory contents: "); // prints a heading
 
-      int placeholder = memory[loopcount];
+      printf("%04" PRIx16, memory[loopcount]); // prints content in hex
 
-      printf("\n%d\n", placeholder); // This prints the content of the array at the iteration it is at
-      printf("%p", &placeholder);  // This prints the address, not in the form you asked for (I will try work on that)
+      printf(":%p\n", &memory[loopcount]); //prints address not in hex
+
 
 }
 
 int16_t convert_bin2dec(char *str){
 
-    const char* input = str;
+    char* input = str;
 
     int16_t value = 0; //int16 is a signed int
 
