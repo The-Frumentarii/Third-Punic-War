@@ -49,3 +49,7 @@ void store(short memory[4096], struct registers reg) {
     memory[reg.MAR] = reg.AC;
 }
 
+void jump(struct registers reg) {
+    reg.PC = reg.MAR;
+}
+
