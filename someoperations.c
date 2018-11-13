@@ -53,3 +53,12 @@ void jump(struct registers reg) {
     reg.PC = reg.MAR;
 }
 
+
+void shiftright(struct registers reg) {
+    reg.AC = (reg.MAR / 2);
+}
+
+void shiftleft(struct registers reg) {
+    reg.AC = (reg.MAR * 2);
+}
+
