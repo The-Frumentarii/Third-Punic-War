@@ -11,11 +11,11 @@ void skipcond(struct registers reg) {
 }
 
 void and(short memory[4096], struct registers reg) {
-    return(reg.MAR & reg.AC);
+    reg.AC = reg.MAR & reg.AC;
 }
 
 void or(short memory[4096], struct registers reg) {
-    return(reg.MAR | reg.AC);
+    reg.AC = reg.MAR | reg.AC;
 }
 
 void output(struct registers reg) {
@@ -28,6 +28,15 @@ void add(short memory[4096], struct registers reg){
 		reg.FR = 2; 
 	else{
 		reg.AC += memory[reg.MAR];
+	}
+		
+}
+
+void sub(short memory[4096], struct registers reg){
+	if(reg.AC - memory[reg.MAR]>32767 || reg.AC - memory[reg.MAR]<-32768)
+		reg.FR = 2; 
+	else{
+		reg.AC -= memory[reg.MAR];
 	}
 		
 }
