@@ -22,3 +22,12 @@ void output(struct registers reg) {
     reg.OutReg = reg.AC;
     printf ("The value of register AC is: %X \n", reg.OutReg);
 }
+
+void add(short memory[4096], struct registers reg){
+	if(reg.AC + memory[reg.MAR]>32767 || reg.AC + memory[reg.MAR]<-32768)
+		reg.FR = 2; 
+	else{
+		reg.AC += memory[reg.MAR];
+	}
+		
+}
