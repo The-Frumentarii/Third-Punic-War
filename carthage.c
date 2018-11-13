@@ -35,6 +35,8 @@ void halt(struct registers reg);
 void loadc(struct registers reg);
 void and(short memory[4096], struct registers reg);
 void or(short memory[4096], struct registers reg);
+void shiftright(struct registers reg);
+void shiftleft(struct registers reg);
 
 //Helper functions:
 char* cdtb(int p, char *binary, int bits);	//(Convert decimal to binary)   DONE
