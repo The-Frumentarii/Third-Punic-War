@@ -40,3 +40,7 @@ void sub(short memory[4096], struct registers reg){
 	}
 		
 }
+
+void load(short memory[4096], struct registers reg) {
+    reg.AC = memory[reg.MAR];
+}
