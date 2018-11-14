@@ -107,7 +107,7 @@ void load_default(short memory[4096]){
 	memory[7] = -32768;		//Jump
 	memory[8] = -28672;		//LoadC
 	memory[9] = -24576;		//And
-	memory[10] = -20480;	//Or
+	memory[10] = -20480;		//Or
 	memory[11] = 0;			//Halt
 }
 
