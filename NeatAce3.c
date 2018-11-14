@@ -325,7 +325,7 @@ void input(Registers *reg){
 
 void display_memory_contents(short memory[4096]){
 
-	FILE *OutFile = fopen("C:\\Users\\Umer\\Documents\\memoryContents.txt", "w");
+	FILE *OutFile = fopen("C:\\Location\\memoryContents.txt", "w");
 
     	for(int i=0;i<4096;i++){
 
