@@ -34,6 +34,8 @@ void add(short memory[4096], Registers *reg);
 void output(Registers *reg);
 void skipcond(Registers *reg);
 void jump(Registers *reg);
+void and(Registers *reg);
+void or(Registers *reg);
 
 //Display memory functions
 void display_memory_contents(short memory[4096]);
@@ -48,9 +50,8 @@ short operand(char *str);
 /*
 void input(struct registers reg);
 
+
 void loadc(struct registers reg);
-void and(short memory[4096], struct registers reg);
-void or(short memory[4096], struct registers reg);
 */
 
 int main(int argc, char* argv[]){
@@ -230,18 +231,13 @@ short fde(short memory[4096]){
 			        break;
 			case 9:
 			        //loadc(reg);
-	
 			        printf("LoadC.\n");
 			        break;
 			case 10:
-			        //and(reg,memory);
-	
-			        printf("And.\n");
+			        and(&reg);
 			        break;
 			case 11:
-			        //or(reg,memory);
-
-			        printf("Or.\n");
+			       	or(&reg);
 			        break;
 			default:
 			        printf("Invalid Opcode.\n");
@@ -290,6 +286,14 @@ void skipcond(Registers *reg){ //!!!!! Might cause Out of bounds error
 
 void jump(Registers *reg){
     reg->PC = reg->MAR;
+}
+
+void and(Registers *reg) {
+    reg->AC = reg->MAR & reg->AC;
+}
+
+void or(Registers *reg) {
+    reg->AC = reg->MAR | reg->AC;
 }
 //***********************Display Memory functions*************************
 //************************************************************************
