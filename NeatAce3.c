@@ -4,6 +4,7 @@
 #include <inttypes.h>
 
 #define TRUE 1
+#define FALSE 0
 
 typedef struct {
 	short AC;		//Acumulator						16 bits
@@ -30,6 +31,7 @@ void load(short memory[4096],Registers *reg);
 void store(short memory[4096],Registers *reg);
 void sub(short memory[4096], Registers *reg);
 void add(short memory[4096], Registers *reg);
+void input(Registers *reg);
 
 void output(Registers *reg);
 void skipcond(Registers *reg);
@@ -48,7 +50,6 @@ short opcode(char *str);
 short operand(char *str);
 
 /*
-void input(struct registers reg);
 
 
 void loadc(struct registers reg);
@@ -160,7 +161,7 @@ void read_file(short memory[4096]){
 	int index = 0;
 
 	printf("Please enter a full file name with the extension.\n");
-	printf("(Up to 20 chars in length)\n");
+	printf("(Up to 255 chars in length)\n");
 	scanf(" %255s", file);
 	filePointer = fopen(file, "r");
 
@@ -215,7 +216,8 @@ short fde(short memory[4096]){
 			        add(memory,&reg);
 			        break;
 			case 5:
-			        //input(reg);
+			        input(&reg);
+				break;
 
 			        printf("Input.\n");
 			        break;
@@ -294,6 +296,29 @@ void and(Registers *reg) {
 
 void or(Registers *reg) {
     reg->AC = reg->MAR | reg->AC;
+}
+
+void input(Registers *reg){
+	int valid = FALSE;
+	char inputVal[17];
+	while(!valid){
+		valid = TRUE;
+		printf("Enter new AC in binary (16 bit): ");
+		scanf(" %17s", inputVal);
+
+		if (strlen(inputVal) != 16){
+			valid = FALSE;
+			continue;
+		}
+		
+		for(int i = 0; i<16; i++){
+			if(!(inputVal[i] == '0' || inputVal[i] == '1')){
+				valid = FALSE;
+				break;
+			}
+		}	
+	}
+	reg->AC = cbtd(inputVal, 0);
 }
 //***********************Display Memory functions*************************
 //************************************************************************
