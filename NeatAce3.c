@@ -325,12 +325,16 @@ void input(Registers *reg){
 
 void display_memory_contents(short memory[4096]){
 
-	for(int i=0;i<4096;i++){
-    	printf("%d: \t", i); // prints a heading
-      	printf("%04x", (unsigned short)memory[i]); // prints content in hex
-      	printf("\n");
-	}
-	//Needs to print to a file
+	FILE *OutFile = fopen("C:\\Users\\Umer\\Documents\\memoryContents.txt", "w");
+
+    	for(int i=0;i<4096;i++){
+
+        fprintf(OutFile, "%d: \t", i);
+        fprintf(OutFile, "%04x", (unsigned short)memory[i]);
+        fprintf(OutFile, "\n");
+
+    }
+    fclose(OutFile);
 }
 
 void display_assembly(short memory[]){	
