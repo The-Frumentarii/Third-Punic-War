@@ -278,7 +278,7 @@ void add(short memory[4096], Registers *reg){
 
 void output(Registers *reg){
     reg->OutREG = reg->AC;
-    printf ("The value of register AC is: %X \n", reg->OutREG);
+    printf ("The value of register AC is: %04x \n", (unsigned short)reg->OutREG);
 }
 
 void skipcond(Registers *reg){ //!!!!! Might cause Out of bounds error
