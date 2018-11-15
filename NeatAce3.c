@@ -36,8 +36,8 @@ void input(Registers *reg);
 void output(Registers *reg);
 void skipcond(Registers *reg);
 void jump(Registers *reg);
-void and(Registers *reg);
-void or(Registers *reg);
+void and(short memory[4096], Registers *reg);
+void or(short memory[4096], Registers *reg);
 
 //Display memory functions
 void display_memory_contents(short memory[4096]);
@@ -236,10 +236,10 @@ short fde(short memory[4096]){
 			        printf("LoadC.\n");
 			        break;
 			case 10:
-			        and(&reg);
+			        and(memory, &reg);
 			        break;
 			case 11:
-			       	or(&reg);
+			       	or(memory, &reg);
 			        break;
 			default:
 			        printf("Invalid Opcode.\n");
@@ -290,12 +290,12 @@ void jump(Registers *reg){
     reg->PC = reg->MAR;
 }
 
-void and(Registers *reg) {
-    reg->AC = reg->MAR & reg->AC;
+void and(short memory[4096], Registers *reg) {
+    reg->AC = memory[reg->MAR] & reg->AC;
 }
 
-void or(Registers *reg) {
-    reg->AC = reg->MAR | reg->AC;
+void or(short memory[4096], Registers *reg) {
+    reg->AC = memory[reg->MAR] | reg->AC;
 }
 
 void input(Registers *reg){
