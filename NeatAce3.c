@@ -192,7 +192,7 @@ int read_file(short memory[4096]){
 //***********************FDE and Operation functions*************************
 //***************************************************************************
 
-short fde(short memory[4096]){
+void fde(short memory[4096]){
 	
 	Registers reg = {0};
 	char bin16[17];
@@ -280,7 +280,6 @@ short fde(short memory[4096]){
 			break;
 	}
 	
-	return reg.AC;
 }
 
 void halt(Registers *reg){
