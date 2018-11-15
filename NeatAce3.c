@@ -23,7 +23,7 @@ int read_console_input(short memory[4096]);
 int read_file(short memory[4096]);
 
 //Fetch-Decode-Execute
-short fde(short memory[4096]);
+void fde(short memory[4096]);
 
 //Functions for operations
 void halt(Registers *reg);
@@ -245,33 +245,34 @@ short fde(short memory[4096]){
 			       	or(memory, &reg);
 			        break;
 			case 12:
-					not(&reg);
-					break;
+				not(&reg);
+				break;
 			case 13:
-					xor(memory, &reg);
-					break;
+				xor(memory, &reg);
+				break;
 			case 14:
-					shiftleft(&reg);
-					break;
+				shiftleft(&reg);
+				break;
 			case 15:
-					shiftright(&reg);
-					break;
+				shiftright(&reg);
+				break;
 		}
 	}
 	switch(reg.FR){
 		case 0:
-		        printf("Program halted\n");
+		        printf("Program halted.\n");
+			printf("The value of the AC is %d.\n",reg.AC);
 		        break;
 		case 2:
-		        printf("Overflow error\n");
+		        printf("Overflow error.\n");
 			display_registers(&reg);;
 		        break;
 		case 3:
-			printf("Underflow error\n");
+			printf("Underflow error.\n");
 			display_registers(&reg);
 		        break;
 		case 4:
-		        printf("Memory out of bounds error\n");
+		        printf("Memory out of bounds error.\n");
 			display_registers(&reg);
 		        break;
 		default:
