@@ -467,11 +467,11 @@ void display_assembly(short memory[], int no_instructions){
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			case 15:
-				instruction = "SHIFTR";
+				instruction = "SFTR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			case 14:
-				instruction = "SHIFTL";
+				instruction = "SFTL";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			}
