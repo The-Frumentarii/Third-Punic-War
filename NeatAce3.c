@@ -442,7 +442,7 @@ void display_assembly(short memory[], int no_instructions){
 				break;
 			case 9:
 				instruction = "LOADC";
-				operating_on = operand(cdtb(memory[addressp], binary, 16),0);
+				operating_on = operand(cdtb(memory[address], binary, 16),2);
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			case 10:
