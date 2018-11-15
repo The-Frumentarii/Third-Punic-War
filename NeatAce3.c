@@ -220,9 +220,6 @@ short fde(short memory[4096]){
 			case 5:
 			        input(&reg);
 				break;
-
-			        printf("Input.\n");
-			        break;
 			case 6:
 			        output(&reg);
 			        break;
