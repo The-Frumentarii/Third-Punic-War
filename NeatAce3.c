@@ -126,7 +126,7 @@ int read_console_input(short memory[4096]){
 										
             if (strcmp(str, "stop") == 0) {							//If the input was 'stop' then stop reading inputs;
                 printf("stopped\n");	
-                return;
+                return i;
 			}
 			
 			if (strlen(str) != 16) {								//Check if the input has the correct size;
