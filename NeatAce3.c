@@ -38,6 +38,8 @@ void skipcond(Registers *reg);
 void jump(Registers *reg);
 void and(short memory[4096], Registers *reg);
 void or(short memory[4096], Registers *reg);
+void shiftright(Registers *reg);
+void shiftleft(Registers *reg);
 
 //Display memory functions
 void display_memory_contents(short memory[4096]);
@@ -241,6 +243,12 @@ short fde(short memory[4096]){
 			case 11:
 			       	or(memory, &reg);
 			        break;
+			case 14:
+				shiftleft(&reg);
+				break;
+			case 15:
+				shiftright(&reg);
+				break;
 			default:
 			        printf("Invalid Opcode.\n");
 			        break;
@@ -319,6 +327,14 @@ void input(Registers *reg){
 		}	
 	}
 	reg->AC = cbtd(inputVal, 0);
+}
+
+void shiftright(Registers *reg) {
+    reg->AC = (reg->AC >> 1);
+}
+
+void shiftleft(Registers *reg) {
+    reg->AC = (reg->AC << 1);
 }
 //***********************Display Memory functions*************************
 //************************************************************************
