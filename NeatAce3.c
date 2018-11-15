@@ -400,7 +400,7 @@ void display_assembly(short memory[], int no_instructions){
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	address = 0;
-	while(address <= no_instructions&&address < 4056) {
+	while(address < no_instructions&&address < 4056) {
 		operating_on = operand(cdtb(memory[address], binary, 16),0);
         	switch(opcode(cdtb(memory[address+jump], binary, 16))){
 			case 0:
