@@ -32,7 +32,7 @@ void store(short memory[4096],Registers *reg);
 void sub(short memory[4096], Registers *reg);
 void add(short memory[4096], Registers *reg);
 void input(Registers *reg);
-
+void loadC(Registers *reg);
 void output(Registers *reg);
 void skipcond(Registers *reg);
 void jump(Registers *reg);
@@ -49,13 +49,7 @@ void display_assembly(short memory[4096]);
 short cbtd(char input[], int comp);
 char* cdtb(int p, char *binary, int bits);
 short opcode(char *str);
-short operand(char *str);
-
-/*
-
-
-void loadc(struct registers reg);
-*/
+short operand(char *str,int comp);
 
 int main(int argc, char* argv[]){
 
@@ -199,7 +193,7 @@ short fde(short memory[4096]){
 		reg.IR = memory[reg.MAR];
 		reg.PC++;
 		cdtb(reg.IR, bin16, 16);
-		reg.MAR = operand(bin16);  //MAR refers to an address 
+		reg.MAR = operand(bin16,0);  //MAR refers to an address 
 		switch (opcode(bin16)){
 			
 			case 0:
@@ -228,11 +222,9 @@ short fde(short memory[4096]){
 			        break;
 			case 8:
 			        jump(&reg);
-			        printf("Jump.\n");
 			        break;
 			case 9:
-			        //loadc(reg);
-			        printf("LoadC.\n");
+			        loadC(&reg);
 			        break;
 			case 10:
 			        and(memory, &reg);
@@ -281,28 +273,6 @@ void add(short memory[4096], Registers *reg){
 		reg->AC += memory[reg->MAR];
 }
 
-void output(Registers *reg){
-    reg->OutREG = reg->AC;
-    printf ("The value of register AC is: %04x \n", (unsigned short)reg->OutREG);
-}
-
-void skipcond(Registers *reg){ //!!!!! Might cause Out of bounds error
-    if (reg->AC == 0) 
-        reg->PC++;
-}
-
-void jump(Registers *reg){
-    reg->PC = reg->MAR;
-}
-
-void and(short memory[4096], Registers *reg) {
-    reg->AC = memory[reg->MAR] & reg->AC;
-}
-
-void or(short memory[4096], Registers *reg) {
-    reg->AC = memory[reg->MAR] | reg->AC;
-}
-
 void input(Registers *reg){
 	int valid = FALSE;
 	char inputVal[17];
@@ -325,6 +295,36 @@ void input(Registers *reg){
 	}
 	reg->AC = cbtd(inputVal, 0);
 }
+
+void output(Registers *reg){
+    reg->OutREG = reg->AC;
+    printf ("The value of register AC is: %04x \n", (unsigned short)reg->OutREG);
+}
+
+void skipcond(Registers *reg){ //!!!!! Might cause Out of bounds error
+    if (reg->AC == 0) 
+        reg->PC++;
+}
+
+void jump(Registers *reg){
+    reg->PC = reg->MAR;
+}
+
+void loadC(Registers *reg){
+	char bin16[17];
+	cdtb(reg->IR, bin16, 16);
+	reg->AC = operand(bin16,2);;
+}
+
+void and(short memory[4096], Registers *reg) {
+    reg->AC = memory[reg->MAR] & reg->AC;
+}
+
+void or(short memory[4096], Registers *reg) {
+    reg->AC = memory[reg->MAR] | reg->AC;
+}
+
+
 
 void shiftright(Registers *reg) {
     reg->AC = (reg->AC >> 1);
@@ -359,7 +359,7 @@ void display_assembly(short memory[]){
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	for(address = 0; address+jump < 4096; address++) {
-		operating_on = operand(cdtb(memory[address+jump], binary, 16));
+		operating_on = operand(cdtb(memory[address+jump], binary, 16),0);
         	switch(opcode(cdtb(memory[address+jump], binary, 16))){
 			case 11:
 				instruction = "OR";
@@ -369,7 +369,7 @@ void display_assembly(short memory[]){
 				break;
 			case 9:
 				instruction = "LOADC";
-				operating_on = operand(cdtb(memory[address+jump], binary, 16));
+				operating_on = operand(cdtb(memory[address+jump], binary, 16),0);
 				break;
 			case 8:
 				instruction = "JUMPX";
@@ -519,7 +519,7 @@ short opcode(char *str){
 	return cbtd(opcode,0);
 }
 
-short operand(char *str){
+short operand(char *str,int comp){
 	char operand[13];
 
 	for(int i=4; i<16; i++){
@@ -527,5 +527,5 @@ short operand(char *str){
 	}
 	operand[16] = '\0';
 	
-	return cbtd(operand,0);
+	return cbtd(operand,comp);
 }
