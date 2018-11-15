@@ -84,11 +84,11 @@ int main(int argc, char* argv[]){
 
 	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	//display_assembly(memory, no_instructions);
+	display_assembly(memory, no_instructions);
 	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	fde(memory); // fetch-decode-execute
-	//display_memory_contents(memory);
+	display_memory_contents(memory);
 	
 	return 0;
 
