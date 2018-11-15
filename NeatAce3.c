@@ -82,8 +82,11 @@ int main(int argc, char* argv[]){
 	
 	
 
-
+	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	//display_assembly(memory, no_instructions);
+	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	fde(memory); // fetch-decode-execute
 	//display_memory_contents(memory);
 	
@@ -95,7 +98,6 @@ int main(int argc, char* argv[]){
 //*******************************************************************************
 
 int load_default(short memory[4096]){
-	printf("Print default content\n");
 	memory[0] = 4096;		//Load	
 	memory[1] = 8192;		//Store
 	memory[2] = 12288;		//Sub
@@ -108,11 +110,13 @@ int load_default(short memory[4096]){
 	memory[9] = -24576;		//And
 	memory[10] = -20480;		//Or
 	memory[11] = 0;			//Halt
+	printf("Loaded default content.\n");
 	return 11;
 }
 
 int read_console_input(short memory[4096]){
 	int i;
+	printf("Enter intructions in binary (2's complement). Write 'stop' to exit.\n");
 	for(i=0;i<4096;i++){
     	char str[17];
 
