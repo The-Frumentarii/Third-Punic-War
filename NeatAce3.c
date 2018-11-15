@@ -38,6 +38,7 @@ void skipcond(Registers *reg);
 void jump(Registers *reg);
 void and(short memory[4096], Registers *reg);
 void or(short memory[4096], Registers *reg);
+void not(Registers *reg);
 void shiftright(Registers *reg);
 void shiftleft(Registers *reg);
 
@@ -232,6 +233,9 @@ short fde(short memory[4096]){
 			case 11:
 			       	or(memory, &reg);
 			        break;
+			case 12:
+				not(&reg);
+				break;
 			case 14:
 				shiftleft(&reg);
 				break;
@@ -324,7 +328,9 @@ void or(short memory[4096], Registers *reg) {
     reg->AC = memory[reg->MAR] | reg->AC;
 }
 
-
+void not(Registers *reg) {
+    reg->AC = ~reg->AC;
+}
 
 void shiftright(Registers *reg) {
     reg->AC = (reg->AC >> 1);
