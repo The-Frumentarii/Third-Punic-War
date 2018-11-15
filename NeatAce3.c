@@ -18,9 +18,9 @@ typedef struct {
 }Registers;
 
 //Input Functions
-void load_default(short memory[4096]);
-void read_console_input(short memory[4096]);
-void read_file(short memory[4096]);
+int load_default(short memory[4096]);
+int read_console_input(short memory[4096]);
+int read_file(short memory[4096]);
 
 //Fetch-Decode-Execute
 short fde(short memory[4096]);
@@ -52,9 +52,10 @@ short cbtd(char input[], int comp);
 char* cdtb(int p, char *binary, int bits);
 short opcode(char *str);
 short operand(char *str,int comp);
+void display_registers(Registers *reg);
 
 int main(int argc, char* argv[]){
-
+	int no_instructions =0;
 	short memory[4096] = {0};
 
 	if(argc<2){
@@ -64,13 +65,13 @@ int main(int argc, char* argv[]){
 	}
 
 	if(!(strcmp(argv[1],"-d")))
-		load_default(memory);		//load default content to memory
+		no_instructions =load_default(memory);		//load default content to memory
 	else{
 		if(!(strcmp(argv[1],"-c")))
-			read_console_input(memory);		//read user input from console into the memory
+			no_instructions =read_console_input(memory);		//read user input from console into the memory
 		else{
 			if(!(strcmp(argv[1],"-f")))
-				read_file(memory);		//read the contents of a file into memory
+				no_instructions =read_file(memory);		//read the contents of a file into memory
 			else{
 				printf("Invalid argument.\n");
 				printf("Program terminated.\n");
@@ -82,7 +83,7 @@ int main(int argc, char* argv[]){
 	
 
 
-	//display_assembly(memory);
+	//display_assembly(memory, no_instructions);
 	fde(memory); // fetch-decode-execute
 	//display_memory_contents(memory);
 	
@@ -93,7 +94,7 @@ int main(int argc, char* argv[]){
 //*******************************Get Input Functions*****************************
 //*******************************************************************************
 
-void load_default(short memory[4096]){
+int load_default(short memory[4096]){
 	printf("Print default content\n");
 	memory[0] = 4096;		//Load	
 	memory[1] = 8192;		//Store
@@ -107,11 +108,12 @@ void load_default(short memory[4096]){
 	memory[9] = -24576;		//And
 	memory[10] = -20480;		//Or
 	memory[11] = 0;			//Halt
+	return 11;
 }
 
-void read_console_input(short memory[4096]){
-
-	for(int i=0;i<4096;i++){
+int read_console_input(short memory[4096]){
+	int i;
+	for(i=0;i<4096;i++){
     	char str[17];
 
 		while(TRUE){												//This will keep on looping until a valid input is found;
@@ -147,11 +149,11 @@ void read_console_input(short memory[4096]){
     }
     
     printf("You have reached the end of the memory.\n");
-	
+	return i;
 }
 
 
-void read_file(short memory[4096]){
+int read_file(short memory[4096]){
 
 	FILE *filePointer;
 	char line[16];
@@ -180,7 +182,7 @@ void read_file(short memory[4096]){
 	}
 
 	fclose(filePointer);
-
+	return index;
 }
 
 //***********************FDE and Operation functions*************************
@@ -250,10 +252,27 @@ short fde(short memory[4096]){
 			case 15:
 				shiftright(&reg);
 				break;
-			default:
-			        printf("Invalid Opcode.\n");
-			        break;
 		}
+	}
+	switch(reg.FR){
+		case 0:
+		        printf("Program halted\n");
+		        break;
+		case 2:
+		        printf("Overflow error\n");
+			display_registers(&reg);;
+		        break;
+		case 3:
+			printf("Underflow error\n");
+			display_registers(&reg);
+		        break;
+		case 4:
+		        printf("Memory out of bounds error\n");
+			display_registers(&reg);
+		        break;
+		default:
+			printf("\n");
+			break;
 	}
 	
 	return reg.AC;
@@ -272,15 +291,19 @@ void store(short memory[4096],Registers *reg){
 }
 
 void sub(short memory[4096], Registers *reg){
-	if(reg->AC - memory[reg->MAR]>32767 || reg->AC - memory[reg->MAR]<-32768)
+	if(reg->AC - memory[reg->MAR]>32767)
 		reg->FR = 2; 
+	else if(reg->AC - memory[reg->MAR]<-32768)
+		reg->FR = 3; 
 	else
 		reg->AC -= memory[reg->MAR];
 }
 
 void add(short memory[4096], Registers *reg){
-	if(reg->AC + memory[reg->MAR]>32767 || reg->AC + memory[reg->MAR]<-32768)
+	if(reg->AC + memory[reg->MAR]>32767)
 		reg->FR = 2; 
+	else if(reg->AC + memory[reg->MAR]<-32768)
+		reg->FR = 3; 
 	else
 		reg->AC += memory[reg->MAR];
 }
@@ -368,7 +391,7 @@ void display_memory_contents(short memory[4096]){
     fclose(OutFile);
 }
 
-void display_assembly(short memory[]){	
+void display_assembly(short memory[], int no_instructions){	
 	int address;
 	char *instruction = " ";
 	int operating_on;
@@ -376,70 +399,79 @@ void display_assembly(short memory[]){
 	int jump = 0;
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
-	for(address = 0; address+jump < 4096; address++) {
-		operating_on = operand(cdtb(memory[address+jump], binary, 16),0);
+	address = 0;
+	while(address <= no_instructions&&address < 4056) {
+		operating_on = operand(cdtb(memory[address], binary, 16),0);
         	switch(opcode(cdtb(memory[address+jump], binary, 16))){
-			case 11:
-				instruction = "OR";
-				break;
-			case 10:
-				instruction = "AND";
-				break;
-			case 9:
-				instruction = "LOADC";
-				operating_on = operand(cdtb(memory[address+jump], binary, 16),0);
-				break;
-			case 8:
-				instruction = "JUMPX";
-				break;
-			case 7:
-				instruction = "SKIP";
+			case 0:
+				instruction = "HALT";
+				printf(" %d\t| %s\t\t| X\n", address, instruction);
 				operating_on = 0;
-				break;
-			case 6:
-				instruction = "OUTPT";
-				operating_on = 0;
-				break;
-			case 5:
-				instruction = "INPUT";
-				operating_on = 0;
-				break;
-			case 4:
-				instruction = "ADD";
-				break;
-			case 3:
-				instruction = "SUB";
-				break;
-			case 2:
-				instruction = "STORE";
 				break;
 			case 1:
 				instruction = "LOAD";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			case 0:
-				instruction = "HALT";
-				operating_on = 0;
+			case 2:
+				instruction = "STORE";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			default:
-				instruction = "NULL";
-				operating_on = 0;
+			case 3:
+				instruction = "SUB";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-				
-			}
-		printf(" %d\t| %s\t\t| %d\n", address+jump, instruction, operating_on);
-
-		if (strcmp(instruction, "HALT") == 0) {
-			break;
-		}
-		
-		else if(strcmp(instruction, "JUMPX") == 0){
+			case 4:
+				instruction = "ADD";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 5:
+				instruction = "INPUT";
+				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				break;
+			case 6:
+				instruction = "OUTPT";
+				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				break;
+			case 7:
+				instruction = "SKIP";
+				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				break;
+			case 8:
+				instruction = "JUMPX";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 9:
+				instruction = "LOADC";
+				operating_on = operand(cdtb(memory[addressp], binary, 16),0);
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 10:
+				instruction = "AND";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 11:
+				instruction = "OR";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
 			
-			jump = operating_on;
-			continue;
-		}
-		else{
-			continue;
-		}
+			case 12:
+				instruction = "XOR";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 13:
+				instruction = "NOT";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 14:
+				instruction = "SHIFTR";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 15:
+				instruction = "SHIFTL";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			}
+		address++;
 	
     }
 }
@@ -546,4 +578,15 @@ short operand(char *str,int comp){
 	operand[16] = '\0';
 	
 	return cbtd(operand,comp);
+}
+
+void display_registers(Registers *reg){
+
+	printf ("The value of register AC is: %04x \n", (unsigned short)reg->AC);
+	printf ("The value of register IR is: %04x \n", (unsigned short)reg->IR);
+	printf ("The value of register MBR is: %04x \n", (unsigned short)reg->MBR);
+	printf ("The value of register PC is: %04x \n", (unsigned short)reg->PC);
+	printf ("The value of register InREG is: %04x \n", (unsigned short)reg->InREG);
+	printf ("The value of register OutREG is: %04x \n", (unsigned short)reg->OutREG);
+	printf ("The value of register FR is: %04x \n", (unsigned short)reg->FR);
 }
