@@ -458,19 +458,19 @@ void display_assembly(short memory[], int no_instructions){
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			
-			case 12:
+			case 13:
 				instruction = "XOR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			case 13:
+			case 12:
 				instruction = "NOT";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			case 14:
+			case 15:
 				instruction = "SHIFTR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			case 15:
+			case 14:
 				instruction = "SHIFTL";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
