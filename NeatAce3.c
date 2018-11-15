@@ -170,9 +170,13 @@ void read_file(short memory[4096]){
 	printf("File read successful.\n");
 	
 	while (fgets(line, 18, (FILE*)filePointer)){
-			line[16] = '\0';
-			memory[index] = cbtd(line,2);
-			index++;
+		if(index>4095){
+			printf("Error: Input file was too large. Reading stopped.\n");
+			break;
+		}
+		line[16] = '\0';
+		memory[index] = cbtd(line,2);
+		index++;
 	}
 
 	fclose(filePointer);
