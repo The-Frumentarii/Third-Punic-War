@@ -245,17 +245,17 @@ short fde(short memory[4096]){
 			       	or(memory, &reg);
 			        break;
 			case 12:
-				not(&reg);
-				break;
+					not(&reg);
+					break;
 			case 13:
-				xor(memory, &reg);
-				break;
+					xor(memory, &reg);
+					break;
 			case 14:
-				shiftleft(&reg);
-				break;
+					shiftleft(&reg);
+					break;
 			case 15:
-				shiftright(&reg);
-				break;
+					shiftright(&reg);
+					break;
 		}
 	}
 	switch(reg.FR){
