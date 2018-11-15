@@ -45,7 +45,7 @@ void shiftleft(Registers *reg);
 
 //Display memory functions
 void display_memory_contents(short memory[4096]);
-void display_assembly(short memory[4096]);
+void display_assembly(short memory[4096],int no_instructions);
 
 //Helper Functions
 short cbtd(char input[], int comp);
