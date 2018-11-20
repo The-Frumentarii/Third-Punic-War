@@ -6,8 +6,11 @@
 #define TRUE 1
 #define FALSE 0
 
+/*
+	Structure that holds the values of the registers.
+*/
 typedef struct {
-	short AC;		//Acumulator						16 bits
+	short AC;		//Accumulator						16 bits
 	short IR;		//Instruction Register 					16 bits
 	short MBR; 		//Memory Buffer Register				16 bits
 	short PC; 		//Program Counter					12 bits
@@ -54,6 +57,10 @@ short opcode(char *str);
 short operand(char *str,int comp);
 void display_registers(Registers *reg);
 
+
+/*
+	Simulates an disassembler.
+*/
 int main(int argc, char* argv[]){
 	int no_instructions =0;
 	short memory[4096] = {0};
@@ -82,12 +89,12 @@ int main(int argc, char* argv[]){
 	
 	
 
-	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	display_assembly(memory, no_instructions);
-	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	printf("\t~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	fde(memory); // fetch-decode-execute
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	fde(memory); 
 	display_memory_contents(memory);
 	
 	return 0;
@@ -97,6 +104,9 @@ int main(int argc, char* argv[]){
 //*******************************Get Input Functions*****************************
 //*******************************************************************************
 
+/*
+	Loads some default content into memory.
+*/
 int load_default(short memory[4096]){
 	memory[0] = 4096;		//Load	
 	memory[1] = 8192;		//Store
@@ -114,9 +124,12 @@ int load_default(short memory[4096]){
 	return 11;
 }
 
+/*
+	Loads the memory with instructions written by the user in the console.
+*/
 int read_console_input(short memory[4096]){
 	int i;
-	printf("Enter intructions in binary (2's complement). Write 'stop' to exit.\n");
+	printf("Enter instructions in binary (2's complement). Write 'stop' to exit.\n");
 	for(i=0;i<4096;i++){
     	char str[17];
 
@@ -149,14 +162,16 @@ int read_console_input(short memory[4096]){
   		// Put the input in memory
   		short to_memory = cbtd(str,2);			
         memory[i] = to_memory;
-        printf("Succesfully wrote to memory.\n");
+        printf("Successfully wrote to memory.\n");
     }
     
     printf("You have reached the end of the memory.\n");
 	return i;
 }
 
-
+/*
+	Loads the memory with instructions from a file.
+*/
 int read_file(short memory[4096]){
 
 	FILE *filePointer;
@@ -192,15 +207,20 @@ int read_file(short memory[4096]){
 //***********************FDE and Operation functions*************************
 //***************************************************************************
 
+/*
+	Performs the fetch-decode-execute cycle and prints some useful messages when an error has occurred. 
+*/
 void fde(short memory[4096]){
 	
 	Registers reg = {0};
 	char bin16[17];
-	reg.AC = 0;
 	
 	reg.FR = 1; 	//Program is running
-	reg.PC = 0;
 	while(reg.FR==1){
+		if(reg.PC==4096){
+			reg.FR = 4;
+			break;
+		}
 		reg.MAR = reg.PC;
 		reg.IR = memory[reg.MAR];
 		reg.PC++;
@@ -245,55 +265,68 @@ void fde(short memory[4096]){
 			       	or(memory, &reg);
 			        break;
 			case 12:
-				not(&reg);
-				break;
+					not(&reg);
+					break;
 			case 13:
-				xor(memory, &reg);
-				break;
+					xor(memory, &reg);
+					break;
 			case 14:
-				shiftleft(&reg);
-				break;
+					shiftleft(&reg);
+					break;
 			case 15:
-				shiftright(&reg);
-				break;
+					shiftright(&reg);
+					break;
 		}
 	}
+	
 	switch(reg.FR){
 		case 0:
 		        printf("Program halted.\n");
-			printf("The value of the AC is %d.\n",reg.AC);
+				printf("The value of the AC is %d.\n",reg.AC);
 		        break;
 		case 2:
 		        printf("Overflow error.\n");
-			display_registers(&reg);;
+				display_registers(&reg);;
 		        break;
 		case 3:
-			printf("Underflow error.\n");
-			display_registers(&reg);
+				printf("Underflow error.\n");
+				display_registers(&reg);
 		        break;
 		case 4:
 		        printf("Memory out of bounds error.\n");
-			display_registers(&reg);
+				display_registers(&reg);
 		        break;
 		default:
-			printf("\n");
+				printf("\n");
 			break;
 	}
 	
 }
 
+/*
+	Performs the halt operation.
+*/
 void halt(Registers *reg){
 	reg->FR = 0;
 }
 
+/*
+	Performs the load operation.
+*/
 void load(short memory[4096],Registers *reg) {
 	reg->AC = memory[reg->MAR];
 }
 
+/*
+	Performs the store operation.
+*/
 void store(short memory[4096],Registers *reg){
 	memory[reg->MAR] = reg->AC;
 }
 
+/*
+	Performs the subtract operation.
+*/
 void sub(short memory[4096], Registers *reg){
 	if(reg->AC - memory[reg->MAR]>32767)
 		reg->FR = 2; 
@@ -303,6 +336,9 @@ void sub(short memory[4096], Registers *reg){
 		reg->AC -= memory[reg->MAR];
 }
 
+/*
+	Performs the add operation.
+*/
 void add(short memory[4096], Registers *reg){
 	if(reg->AC + memory[reg->MAR]>32767)
 		reg->FR = 2; 
@@ -312,6 +348,9 @@ void add(short memory[4096], Registers *reg){
 		reg->AC += memory[reg->MAR];
 }
 
+/*
+	Performs the input operation.
+*/
 void input(Registers *reg){
 	int valid = FALSE;
 	char inputVal[17];
@@ -335,52 +374,86 @@ void input(Registers *reg){
 	reg->AC = cbtd(inputVal, 0);
 }
 
+/*
+	Performs the Output operation.
+*/
 void output(Registers *reg){
     reg->OutREG = reg->AC;
     printf ("The value of register AC is: %04x \n", (unsigned short)reg->OutREG);
 }
 
-void skipcond(Registers *reg){ //!!!!! Might cause Out of bounds error
+/*
+	Performs the Skip on Condition operation.
+*/
+void skipcond(Registers *reg){
     if (reg->AC == 0) 
         reg->PC++;
 }
 
+/*
+	Performs the Jump operation.
+*/
 void jump(Registers *reg){
     reg->PC = reg->MAR;
 }
 
+/*
+	Performs the Load Constant operation.
+*/
 void loadC(Registers *reg){
 	char bin16[17];
 	cdtb(reg->IR, bin16, 16);
 	reg->AC = operand(bin16,2);;
 }
 
+/*
+	Performs the biwise AND operation.
+*/
 void and(short memory[4096], Registers *reg) {
     reg->AC = memory[reg->MAR] & reg->AC;
 }
 
+/*
+	Performs the bitwise OR operation.
+*/
 void or(short memory[4096], Registers *reg) {
     reg->AC = memory[reg->MAR] | reg->AC;
 }
 
+/*
+	Performs the bitwise NOT operation.
+*/
 void not(Registers *reg) {
     reg->AC = ~reg->AC;
 }
 
+/*
+	Performs the bitwise XOR operation.
+*/
 void xor(short memory[4096], Registers *reg) {
     reg->AC = memory[reg->MAR] ^ reg->AC;
 }
 
+/*
+	Performs the Shift Right Logic operation.
+*/
 void shiftright(Registers *reg) {
     reg->AC = (reg->AC >> 1);
 }
 
+/*
+	Performs the Shift Left Logic operation.
+*/
 void shiftleft(Registers *reg) {
     reg->AC = (reg->AC << 1);
 }
+
 //***********************Display Memory functions*************************
 //************************************************************************
 
+/*
+	Prints out the contents of the memory in a file called "memoryContents.txt".
+*/
 void display_memory_contents(short memory[4096]){
 
 	FILE *OutFile = fopen("C:\\Location\\memoryContents.txt", "w");
@@ -395,6 +468,9 @@ void display_memory_contents(short memory[4096]){
     fclose(OutFile);
 }
 
+/*
+	Converts the contents of the memory into assembly and prints the assembly code on the screen.
+*/
 void display_assembly(short memory[], int no_instructions){	
 	int address;
 	char *instruction = " ";
@@ -404,7 +480,7 @@ void display_assembly(short memory[], int no_instructions){
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	address = 0;
-	while(address < no_instructions&&address < 4056) {
+	while(address<no_instructions && address<4056) {
 		operating_on = operand(cdtb(memory[address], binary, 16),0);
         	switch(opcode(cdtb(memory[address+jump], binary, 16))){
 			case 0:
@@ -457,21 +533,20 @@ void display_assembly(short memory[], int no_instructions){
 				instruction = "OR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			
-			case 13:
-				instruction = "XOR";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
-				break;
 			case 12:
 				instruction = "NOT";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
-			case 15:
-				instruction = "SFTR";
+			case 13:
+				instruction = "XOR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			case 14:
 				instruction = "SFTL";
+				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				break;
+			case 15:
+				instruction = "SFTR";
 				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
 				break;
 			}
@@ -482,8 +557,11 @@ void display_assembly(short memory[], int no_instructions){
 
 //***********************Helper functions*********************************
 //************************************************************************
-short cbtd(char input[], int comp){
-	
+
+/*
+	Converts a binary number (represented by the string input) to decimal and returns the value. The comp parameter is used to convert 		from either normal binary or two's complement.
+*/
+short cbtd(char *input, int comp){
 	
 	short result = 0;
 	int power = 1;
@@ -492,41 +570,32 @@ short cbtd(char input[], int comp){
 			power = power * 2;
 			
 	switch(comp){
-		case 0:{
-			power = power * 2;
-			for(int i=0; i<strlen(input); i++){
-				if(input[i] == '1')
-					result = result + power;
-				power = power/2;
-			}
-			break;
-		}
+		case 0:
+				power = power * 2;
+				for(int i=0; i<strlen(input); i++){
+					if(input[i] == '1')
+						result = result + power;
+					power = power/2;
+				}
+				break;
 		
-		case 2:{
-			if(input[0] == '0'){
-				result = 0;
-			for(int i=1; i<strlen(input); i++){
-				if(input[i] == '1')
-					result = result + power;
-				power = power/2;
-			}
-			}
-			else{
-				result = -power*2;
+		case 2:
+				if(input[0] == '1')
+					result = -power*2;
+				
 				for(int i=1; i<strlen(input); i++){
 					if(input[i] == '1')
 						result = result + power;
 					power = power/2;
 				}
-			}
-			break;
-		}
+				break;
 	}
-
 	return result;
 }
 
-//takes in a decimal number and the address of a string to return the binary value as a string
+/*
+	Converts a decimal number (p) to binary and returns a pointer to the binary representation (two's complement).
+*/
 char* cdtb(int p, char *binary, int bits){
 	int i, n, k;
 	n = bits;
@@ -558,9 +627,8 @@ char* cdtb(int p, char *binary, int bits){
 
 
 /*
-//this gets the opcode from an instruction- decided to return it as an int bc it means we can use a switch on it later
+  	Extracts the opcode from an string representing an instruction.
 */
-
 short opcode(char *str){
 	
 	char opcode[5];
@@ -573,6 +641,9 @@ short opcode(char *str){
 	return cbtd(opcode,0);
 }
 
+/*
+	Extracts the operand from an string representing a binary number in either normal binary or two's complment.
+*/
 short operand(char *str,int comp){
 	char operand[13];
 
@@ -584,6 +655,9 @@ short operand(char *str,int comp){
 	return cbtd(operand,comp);
 }
 
+/*
+	Prints the values of the registers on the screen.
+*/
 void display_registers(Registers *reg){
 
 	printf ("The value of register AC is: %04x \n", (unsigned short)reg->AC);
