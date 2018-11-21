@@ -6,7 +6,7 @@
  * Date: 25th of November 2018
  *
  * 
- * Authors:	~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ * Authors:	~ Mateusz Dluzniewski, Reg no: 201727840;
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
