@@ -108,11 +108,11 @@ int main(int argc, char* argv[]){
 		}
 	}
 	
-	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	display_assembly(memory, no_instructions);
-	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
-	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
+	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	fde(memory); 
 	display_memory_contents(memory);
 	
@@ -264,7 +264,7 @@ void fde(short memory[4096]){
 			        break;
 			case 5:
 			        input(&reg);
-				break;
+					break;
 			case 6:
 			        output(&reg);
 			        break;
@@ -304,15 +304,15 @@ void fde(short memory[4096]){
 				printf("The value of the AC is %d.\n",reg.AC);
 		        break;
 		case 2:
-		        printf("Overflow error.\n");
+		        printf("Error: Overflow.\n");
 				display_registers(&reg);;
 		        break;
 		case 3:
-				printf("Underflow error.\n");
+				printf("Error: Underflow.\n");
 				display_registers(&reg);
 		        break;
 		case 4:
-		        printf("Memory out of bounds error.\n");
+		        printf("Error: Memory out of bounds.\n");
 				display_registers(&reg);
 		        break;
 		default:
@@ -333,38 +333,42 @@ void halt(Registers *reg){
 	Performs the load operation.
 */
 void load(short memory[4096],Registers *reg) {
-	reg->AC = memory[reg->MAR];
+	reg->MBR = memory[reg->MAR];
+	reg->AC = reg->MBR;
 }
 
 /*
 	Performs the store operation.
 */
 void store(short memory[4096],Registers *reg){
-	memory[reg->MAR] = reg->AC;
+	reg->MBR = reg->AC;
+	memory[reg->MAR] = reg->MBR;
 }
 
 /*
 	Performs the subtract operation.
 */
 void sub(short memory[4096], Registers *reg){
-	if(reg->AC - memory[reg->MAR]>32767)
+	reg->MBR = memory[reg->MAR];
+	if(reg->AC - reg->MBR>32767)
 		reg->FR = 2; 
-	else if(reg->AC - memory[reg->MAR]<-32768)
+	else if(reg->AC - reg->MBR<-32768)
 		reg->FR = 3; 
 	else
-		reg->AC -= memory[reg->MAR];
+		reg->AC -= reg->MBR;
 }
 
 /*
 	Performs the add operation.
 */
 void add(short memory[4096], Registers *reg){
-	if(reg->AC + memory[reg->MAR]>32767)
+	reg->MBR = memory[reg->MAR];
+	if(reg->AC + reg->MBR>32767)
 		reg->FR = 2; 
-	else if(reg->AC + memory[reg->MAR]<-32768)
+	else if(reg->AC + reg->MBR<-32768)
 		reg->FR = 3; 
 	else
-		reg->AC += memory[reg->MAR];
+		reg->AC += reg->MBR;
 }
 
 /*
@@ -380,17 +384,20 @@ void input(Registers *reg){
 
 		if (strlen(inputVal) != 16){
 			valid = FALSE;
+			printf("Error: Invalid size.\n");
 			continue;
 		}
 		
 		for(int i = 0; i<16; i++){
 			if(!(inputVal[i] == '0' || inputVal[i] == '1')){
 				valid = FALSE;
+				printf("Error: Invalid character(s).\n");
 				break;
 			}
 		}	
 	}
-	reg->AC = cbtd(inputVal, 0);
+	reg->InREG = cbtd(inputVal, 0);
+	reg->AC = reg->InREG;
 }
 
 /*
@@ -429,14 +436,16 @@ void loadC(Registers *reg){
 	Performs the biwise AND operation.
 */
 void and(short memory[4096], Registers *reg) {
-    reg->AC = memory[reg->MAR] & reg->AC;
+	reg->MBR = memory[reg->MAR];
+    reg->AC = reg->MBR & reg->AC;
 }
 
 /*
 	Performs the bitwise OR operation.
 */
 void or(short memory[4096], Registers *reg) {
-    reg->AC = memory[reg->MAR] | reg->AC;
+    reg->MBR = memory[reg->MAR];
+    reg->AC = reg->MBR | reg->AC;
 }
 
 /*
@@ -450,7 +459,8 @@ void not(Registers *reg) {
 	Performs the bitwise XOR operation.
 */
 void xor(short memory[4096], Registers *reg) {
-    reg->AC = memory[reg->MAR] ^ reg->AC;
+    reg->MBR = memory[reg->MAR];
+    reg->AC = reg->MBR ^ reg->AC;
 }
 
 /*
@@ -475,7 +485,7 @@ void shiftleft(Registers *reg) {
 */
 void display_memory_contents(short memory[4096]){
 
-	FILE *OutFile = fopen("C:\\Location\\memoryContents.txt", "w");
+	FILE *OutFile = fopen("memoryContents.txt", "w");
 
     	for(int i=0;i<4096;i++){
 
