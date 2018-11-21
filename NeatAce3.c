@@ -236,7 +236,7 @@ void fde(short memory[4096]){
 	
 	reg.FR = 1; 	//Program is running
 	while(reg.FR==1){
-		if(reg.PC==4096){
+		if(reg.PC>4095){
 			reg.FR = 4;
 			break;
 		}
@@ -301,18 +301,18 @@ void fde(short memory[4096]){
 	switch(reg.FR){
 		case 0:
 		        printf("Program halted.\n");
-				printf("The value of the AC is %d.\n",reg.AC);
+				printf("The value of the AC is %d.\n\n",reg.AC);
 		        break;
 		case 2:
-		        printf("Error: Overflow.\n");
+		        printf("Error: Overflow.\n\n");
 				display_registers(&reg);;
 		        break;
 		case 3:
-				printf("Error: Underflow.\n");
+				printf("Error: Underflow.\n\n");
 				display_registers(&reg);
 		        break;
 		case 4:
-		        printf("Error: Memory out of bounds.\n");
+		        printf("Error: Memory out of bounds.\n\n");
 				display_registers(&reg);
 		        break;
 		default:
@@ -396,6 +396,7 @@ void input(Registers *reg){
 			}
 		}	
 	}
+	printf("Input read successfully.\n\n");
 	reg->InREG = cbtd(inputVal, 0);
 	reg->AC = reg->InREG;
 }
