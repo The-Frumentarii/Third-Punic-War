@@ -1,7 +1,28 @@
+/**************************************************************************
+ * Assessment Title: ACE#3
+ *
+ * Number of Submitted C Files: 1
+ *
+ * Date: 25th of November 2018
+ *
+ * 
+ * Authors:	~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ 		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ *
+ * Personal Statement: We confirm that this submission is all our own work.
+ *
+ *          (Signed)_____________________________________(YOUR_FULL_NAME)
+ *
+ * 
+ *
+ **************************************************************************/
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <inttypes.h>
+
 
 #define TRUE 1
 #define FALSE 0
@@ -11,12 +32,12 @@
 */
 typedef struct {
 	short AC;		//Accumulator						16 bits
-	short IR;		//Instruction Register 					16 bits
-	short MBR; 		//Memory Buffer Register				16 bits
+	short IR;		//Instruction Register 				16 bits
+	short MBR; 		//Memory Buffer Register			16 bits
 	short PC; 		//Program Counter					12 bits
-	short MAR;		//Memory Address Register				12 bits
-	short InREG;		//Input Register					16 bits
-	short OutREG;		//Output Register					16 bits
+	short MAR;		//Memory Address Register			12 bits
+	short InREG;	//Input Register					16 bits
+	short OutREG;	//Output Register					16 bits
 	short FR;		//Flag Register						16 bits
 }Registers;
 
