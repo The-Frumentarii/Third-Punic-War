@@ -87,8 +87,6 @@ int main(int argc, char* argv[]){
 		}
 	}
 	
-	
-
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	printf("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\t\n");
 	display_assembly(memory, no_instructions);
@@ -473,81 +471,64 @@ void display_memory_contents(short memory[4096]){
 */
 void display_assembly(short memory[], int no_instructions){	
 	int address;
-	char *instruction = " ";
-	int operating_on;
-	char binary[17];
-	int jump = 0;
+	short operating_on;
+	char binary[17] = "0000000000000000\n";
+
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	address = 0;
 	while(address<no_instructions && address<4056) {
 		operating_on = operand(cdtb(memory[address], binary, 16),0);
-        	switch(opcode(cdtb(memory[address+jump], binary, 16))){
+        switch(opcode(cdtb(memory[address], binary, 16))){
 			case 0:
-				instruction = "HALT";
-				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				printf(" %d\t| HALT\t\t| X\n", address);
 				operating_on = 0;
 				break;
 			case 1:
-				instruction = "LOAD";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| LOAD\t\t| %d\n", address, operating_on);
 				break;
 			case 2:
-				instruction = "STORE";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| STORE\t\t| %d\n", address, operating_on);
 				break;
 			case 3:
-				instruction = "SUB";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| SUB\t\t| %d\n", address, operating_on);
 				break;
 			case 4:
-				instruction = "ADD";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| ADD\t\t| %d\n", address, operating_on);
 				break;
 			case 5:
-				instruction = "INPUT";
-				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				printf(" %d\t| INPUT\t\t| X\n", address);
 				break;
 			case 6:
-				instruction = "OUTPT";
-				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				printf(" %d\t| OUTPT\t\t| X\n", address);
 				break;
 			case 7:
-				instruction = "SKIP";
-				printf(" %d\t| %s\t\t| X\n", address, instruction);
+				printf(" %d\t| SKIP\t\t| X\n", address);
 				break;
 			case 8:
-				instruction = "JUMPX";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| JUMPX\t\t| %d\n", address, operating_on);
 				break;
 			case 9:
-				instruction = "LOADC";
 				operating_on = operand(cdtb(memory[address], binary, 16),2);
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| LOADC\t\t| %d\n", address, operating_on);
 				break;
 			case 10:
-				instruction = "AND";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| AND\t\t| %d\n", address, operating_on);
 				break;
 			case 11:
-				instruction = "OR";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| OR\t\t| %d\n", address, operating_on);
 				break;
 			case 12:
-				instruction = "NOT";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| NOT\t\t| %d\n", address, operating_on);
 				break;
 			case 13:
-				instruction = "XOR";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| XOR\t\t| %d\n", address, operating_on);
 				break;
 			case 14:
-				instruction = "SFTL";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| SLL\t\t| %d\n", address, operating_on);
 				break;
 			case 15:
-				instruction = "SFTR";
-				printf(" %d\t| %s\t\t| %d\n", address, instruction, operating_on);
+				printf(" %d\t| SRL\t\t| %d\n", address, operating_on);
 				break;
 			}
 		address++;
@@ -646,11 +627,10 @@ short opcode(char *str){
 */
 short operand(char *str,int comp){
 	char operand[13];
-
 	for(int i=4; i<16; i++){
 		operand[i-4] = str[i];
 	}
-	operand[16] = '\0';
+	operand[13] = '\0';
 	
 	return cbtd(operand,comp);
 }
