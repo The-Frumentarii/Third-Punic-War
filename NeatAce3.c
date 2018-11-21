@@ -8,7 +8,7 @@
  * 
  * Authors:	~ Mateusz Dluzniewski, Reg no: 201727840;
  *		~ Rares Lungu, Reg no: 201749583
- *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ *		~ Aoife Keane, Reg no: 201715226
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
  *
