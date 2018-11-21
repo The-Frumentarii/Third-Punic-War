@@ -9,7 +9,7 @@
  * Authors:	~ Mateusz Dluzniewski, Reg no: 201727840;
  *		~ Rares Lungu, Reg no: 201749583
  *		~ Aoife Keane, Reg no: 201715226
- *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ *		~ Sam Montgomery Allam, Reg no: 201708617
  *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
  *
  * Personal Statement: We confirm that this submission is all our own work.
