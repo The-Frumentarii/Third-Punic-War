@@ -10,7 +10,7 @@
  *		~ Rares Lungu, Reg no: 201749583
  *		~ Aoife Keane, Reg no: 201715226
  *		~ Sam Montgomery Allam, Reg no: 201708617
- *		~ YOUR_FULL_NAME, Reg no: YOUR_REGISTRATION_NUMBER
+ *		~ Umer Ahmed, Reg no: 201707142
  *
  * Personal Statement: We confirm that this submission is all our own work.
  *
