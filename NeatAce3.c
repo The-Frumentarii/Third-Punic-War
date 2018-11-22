@@ -149,7 +149,7 @@ int load_default(short memory[4096]){
 int read_console_input(short memory[4096]){
 	int i;
 	printf("Enter instructions in binary (2's complement). Write 'stop' to exit.\n");
-	for(i=4095;i<4096;i++){
+	for(i=0;i<4096;i++){
     	char str[17];
 
 		while(TRUE){												//This will keep on looping until a valid input is found;
@@ -509,7 +509,7 @@ void display_assembly(short memory[], int no_instructions){
 	printf("ADDRESS |INSTRUCTION    |ON\n");
 	printf("________+_______________+_____\n");
 	address = 0;
-	while(address<no_instructions && address<4056) {
+	while(address<no_instructions && address<4096) {
 		operating_on = operand(cdtb(memory[address], binary, 16),0);
         switch(opcode(cdtb(memory[address], binary, 16))){
 			case 0:
