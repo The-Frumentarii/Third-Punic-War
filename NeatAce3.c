@@ -14,7 +14,7 @@
  *
  * Personal Statement: We confirm that this submission is all our own work.
  *
- *          (Signed)_____________________________________(YOUR_FULL_NAME)
+ *          (Signed) Mateusz Dluzniewski
  *
  * 
  *
