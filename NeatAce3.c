@@ -6,15 +6,20 @@
  * Date: 25th of November 2018
  *
  * 
- * Authors:	~ Mateusz Dluzniewski, Reg no: 201727840;
- *		~ Rares Lungu, Reg no: 201749583
- *		~ Aoife Keane, Reg no: 201715226
- *		~ Sam Montgomery Allam, Reg no: 201708617
- *		~ Umer Ahmed, Reg no: 201707142
+ * Authors:	
+ *	1. Mateusz Dluzniewski, Reg no: 201727840;
+ *	2. Rares Lungu, Reg no: 201749583
+ *	3. Aoife Keane, Reg no: 201715226
+ *	4. Sam Montgomery Allam, Reg no: 201708617
+ *	5. Umer Ahmed, Reg no: 201707142
  *
- * Personal Statement: We confirm that this submission is all our own work.
+ * 	 Statement: We confirm that this submission is all our own work.
  *
- *          (Signed) Mateusz Dluzniewski
+ *          	(Signed) Mateusz Dluzniewski
+ *		(Signed) Rares Lungu
+ *		(Signed)
+ *		(Signed)
+ *		(Signed)
  *
  * 
  *
