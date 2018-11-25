@@ -15,7 +15,7 @@
  *
  * 	 Statement: We confirm that this submission is all our own work.
  *
- *          	(Signed) Mateusz Dluzniewski
+ *    	(Signed) Mateusz Dluzniewski
  *		(Signed) Rares Lungu
  *		(Signed) Aoife Keane
  *		(Signed) Umer Ahmed
@@ -88,7 +88,7 @@ void display_registers(Registers *reg);
 	Simulates an disassembler.
 */
 int main(int argc, char* argv[]){
-	int no_instructions =0;
+	int no_instructions = 0;
 	short memory[4096] = {0};
 
 	if(argc<2){
@@ -132,18 +132,18 @@ int main(int argc, char* argv[]){
 	Loads some default content into memory.
 */
 int load_default(short memory[4096]){
-	memory[0] = 4096;		//Load	
-	memory[1] = 8192;		//Store
-	memory[2] = 12288;		//Sub
-	memory[3] = 16384;		//Add
-	memory[4] = 20480;		//Input
-	memory[5] = 24576;		//Output
-	memory[6] = 28672;		//SkipCond
-	memory[7] = -32768;		//Jump
-	memory[8] = -28672;		//LoadC
-	memory[9] = -24576;		//And
-	memory[10] = -20480;		//Or
-	memory[11] = 0;			//Halt
+	memory[0] = cbtd("1001000000100000",2);		//LoadC 32
+	memory[1] = cbtd("0010000000100000",2);		//Store at 32
+	memory[2] = cbtd("1001111111110000",2);		//LoadC -16
+	memory[3] = cbtd("0100000000100000",2);		//Add from 32
+	memory[4] = cbtd("0110000000000000",2);		//Output
+	memory[5] = cbtd("0001000000100000",2);		//Load from 32
+	memory[6] = cbtd("0011000000100000",2);		//Sub from 32
+	memory[7] = cbtd("0110000000000000",2);		//Output
+	memory[8] = cbtd("0111000000000000",2);		//Skip
+	memory[9] = cbtd("0110000000000000",2);		//Output
+	memory[10] = cbtd("0000000000000000",2); 	//Halt
+		
 	printf("Loaded default content.\n");
 	return 11;
 }
@@ -153,6 +153,7 @@ int load_default(short memory[4096]){
 */
 int read_console_input(short memory[4096]){
 	int i;
+	
 	printf("Enter instructions in binary (2's complement). Write 'stop' to exit.\n");
 	for(i=0;i<4096;i++){
     	char str[17];
@@ -162,7 +163,7 @@ int read_console_input(short memory[4096]){
 			scanf("%s",str);										//Get the input;
 										
             if (strcmp(str, "stop") == 0) {							//If the input was 'stop' then stop reading inputs;
-                printf("stopped\n");	
+                printf("Stopped reading instructions from the console.\n");	
                 return i;
 			}
 			
@@ -179,7 +180,7 @@ int read_console_input(short memory[4096]){
                     break;
 				}
 			}
-			if(valid)												//If the input was valid, break  out of the while loop;
+			if(valid)												//If the input was valid, break out of the while loop;
 				break;
   		}
   		
@@ -190,7 +191,7 @@ int read_console_input(short memory[4096]){
     }
     
     printf("You have reached the end of the memory.\n");
-	return i;
+	return i-1;
 }
 
 /*
@@ -203,7 +204,7 @@ int read_file(short memory[4096]){
 	char file[255];
 	int index = 0;
 
-	printf("Please enter a full file name with the extension.\n");
+	printf("Please enter a full file name with the extension:\n");
 	printf("(Up to 255 chars in length)\n");
 	scanf(" %255s", file);
 	filePointer = fopen(file, "r");
@@ -241,7 +242,7 @@ void fde(short memory[4096]){
 	
 	reg.FR = 1; 	//Program is running
 	while(reg.FR==1){
-		if(reg.PC>4095){
+		if(reg.PC>4095){	//Check for out of boudns error
 			reg.FR = 4;
 			break;
 		}
@@ -249,7 +250,7 @@ void fde(short memory[4096]){
 		reg.IR = memory[reg.MAR];
 		reg.PC++;
 		cdtb(reg.IR, bin16, 16);
-		reg.MAR = operand(bin16,0);  //MAR refers to an address 
+		reg.MAR = operand(bin16,0);  
 		switch (opcode(bin16)){
 			
 			case 0:
@@ -320,9 +321,6 @@ void fde(short memory[4096]){
 		        printf("Error: Memory out of bounds.\n\n");
 				display_registers(&reg);
 		        break;
-		default:
-				printf("\n");
-			break;
 	}
 	
 }
@@ -357,10 +355,11 @@ void sub(short memory[4096], Registers *reg){
 	reg->MBR = memory[reg->MAR];
 	if(reg->AC - reg->MBR>32767)
 		reg->FR = 2; 
-	else if(reg->AC - reg->MBR<-32768)
-		reg->FR = 3; 
-	else
-		reg->AC -= reg->MBR;
+	else 
+		if(reg->AC - reg->MBR<-32768)
+			reg->FR = 3; 
+		else
+			reg->AC -= reg->MBR;
 }
 
 /*
@@ -370,10 +369,11 @@ void add(short memory[4096], Registers *reg){
 	reg->MBR = memory[reg->MAR];
 	if(reg->AC + reg->MBR>32767)
 		reg->FR = 2; 
-	else if(reg->AC + reg->MBR<-32768)
-		reg->FR = 3; 
-	else
-		reg->AC += reg->MBR;
+	else 
+		if(reg->AC + reg->MBR<-32768)
+			reg->FR = 3; 
+		else
+			reg->AC += reg->MBR;
 }
 
 /*
@@ -470,17 +470,17 @@ void xor(short memory[4096], Registers *reg) {
 }
 
 /*
-	Performs the Shift Right Logic operation.
-*/
-void shiftright(Registers *reg) {
-    reg->AC = (reg->AC >> 1);
-}
-
-/*
 	Performs the Shift Left Logic operation.
 */
 void shiftleft(Registers *reg) {
     reg->AC = (reg->AC << 1);
+}
+
+/*
+	Performs the Shift Right Logic operation.
+*/
+void shiftright(Registers *reg) {
+    reg->AC = (reg->AC >> 1);
 }
 
 //***********************Display Memory functions*************************
@@ -511,15 +511,14 @@ void display_assembly(short memory[], int no_instructions){
 	short operating_on;
 	char binary[17] = "0000000000000000\n";
 
-	printf("ADDRESS |INSTRUCTION    |ON\n");
+	printf("ADDRESS |INSTRUCTION    |OPRND\n");
 	printf("________+_______________+_____\n");
 	address = 0;
-	while(address<no_instructions && address<4096) {
+	while(address<no_instructions) {
 		operating_on = operand(cdtb(memory[address], binary, 16),0);
         switch(opcode(cdtb(memory[address], binary, 16))){
 			case 0:
 				printf(" %d\t| HALT\t\t| X\n", address);
-				operating_on = 0;
 				break;
 			case 1:
 				printf(" %d\t| LOAD\t\t| %d\n", address, operating_on);
@@ -556,16 +555,16 @@ void display_assembly(short memory[], int no_instructions){
 				printf(" %d\t| OR\t\t| %d\n", address, operating_on);
 				break;
 			case 12:
-				printf(" %d\t| NOT\t\t| %d\n", address, operating_on);
+				printf(" %d\t| NOT\t\t| X\n", address);
 				break;
 			case 13:
 				printf(" %d\t| XOR\t\t| %d\n", address, operating_on);
 				break;
 			case 14:
-				printf(" %d\t| SLL\t\t| %d\n", address, operating_on);
+				printf(" %d\t| SLL\t\t| X\n", address);
 				break;
 			case 15:
-				printf(" %d\t| SRL\t\t| %d\n", address, operating_on);
+				printf(" %d\t| SRL\t\t| X\n", address);
 				break;
 			}
 		address++;
