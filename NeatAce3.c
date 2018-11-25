@@ -19,7 +19,7 @@
  *		(Signed) Rares Lungu
  *		(Signed) Aoife Keane
  *		(Signed) Umer Ahmed
- *		(Signed) Sam Allam
+ *		(Signed) Sam Montgomery Allam
  *
  * 
  *
