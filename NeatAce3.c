@@ -667,7 +667,7 @@ short operand(char *str,int comp){
 	for(int i=4; i<16; i++){
 		operand[i-4] = str[i];
 	}
-	operand[13] = '\0';
+	operand[12] = '\0';
 	
 	return cbtd(operand,comp);
 }
